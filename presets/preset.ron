@@ -1,8 +1,6 @@
-(
-    spec: {
-        "isit": {
-            link: "matematiki-i-it",
-            row: 0,
-        },
-    }
-)
+{
+    "isit": (
+        link: "matematiki-i-it",
+        row: 0
+    ),
+}
