@@ -134,17 +134,18 @@ async fn do_schedule(year: usize, info: &Info) -> Result<web::Json<json::Value>>
 }
 
 #[get("/api/schedule")]
-pub async fn schedule(req: web::Query<Request>) -> Result<impl Responder> {
+pub async fn schedule(
+    web::Query(Request { spec, year }): web::Query<Request>,
+) -> Result<impl Responder> {
     let preset = fs::read_to_string(PRESET)?;
-    let spec: HashMap<String, Info> = ron::from_str(&preset)?;
+    let specs: HashMap<String, Info> = ron::from_str(&preset)?;
 
-    if let Some(info) = spec.get(&req.spec) {
-        do_schedule(req.year, info).await
+    if let Some(info) = specs.get(&spec) {
+        do_schedule(year, info).await
     } else {
         Err(format!(
-            "found `{}` expected one of: {:?}",
-            req.spec,
-            spec.keys().collect::<Vec<_>>()
+            "found `{spec}` expected one of: {:?}",
+            specs.keys().collect::<Vec<_>>()
         )
         .into())
     }
